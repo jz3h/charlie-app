@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#1a1a2e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <title>CharlieApp</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -23,12 +26,39 @@ input, textarea, select { width:100%; padding:10px; background:#0f3460; color:#e
 button { background:#e94560; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:0.9em; width:100%; }
 button:hover { background:#c73650; }
 .result { background:#0f3460; border-radius:8px; padding:12px; margin-top:8px; font-size:0.85em; word-break:break-all; max-height:300px; overflow-y:auto; white-space:pre-wrap; }
+
+#gate{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;align-items:center;justify-content:center;padding:24px}
+#gate .hide{display:none!important}
+.gcard{width:100%;max-width:340px;text-align:center}
+.gleaf{font-size:50px;margin-bottom:8px}
+.gtitle{font-size:30px;letter-spacing:3px;margin-bottom:4px}
+.gaccent{color:var(--accent)}
+.gsub{color:var(--dim);font-size:14px;margin-bottom:30px}
+.gmsg{font-size:14px;color:#c9c9dd;line-height:1.6;margin-bottom:20px;min-height:20px}
+#gate input{width:100%;background:var(--panel2);border:2px solid var(--line);border-radius:14px;color:#fff;font-size:22px;text-align:center;letter-spacing:8px;padding:15px;margin-bottom:12px;outline:none}
+#gate input:focus{border-color:var(--accent)}
+#gate button{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:14px;font-size:17px;font-weight:700;padding:15px;cursor:pointer}
+#gate button.ghost{background:transparent;color:var(--dim);font-weight:400;font-size:13px;padding:10px;margin-top:6px}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:#555;flex-shrink:0}
+.dot.on{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.dot.off{background:#ff4d4d}
+.hstat{font-size:11px;color:var(--dim)}
+.icbtn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:10px;width:38px;height:38px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
 </style>
 </head>
 <body>
 <header>
-<h1>CharlieApp</h1>
-<p>Ferramentas Hacker PWA | Tailscale: 100.116.60.65</p>
+  <div class="hdr-left">
+    <div class="dot on" id="status-dot"></div>
+    <h1>CHARLIE</h1>
+  </div>
+  <div class="hdr-right">
+    <span class="hstat" id="hstat">online</span>
+    <button class="icbtn" onclick="pingStatus()" title="Status">STATUS</button>
+  </div>
 </header>
 <nav id="nav">
 <button class="active" onclick="showSection('home')">Home</button>
@@ -203,5 +233,25 @@ async function getNetworkInfo() {
   box.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
 })();
 </script>
+
+<div id="gate">
+  <div class="gcard">
+    <div class="gleaf">LEAF</div>
+    <div class="gtitle">CHARL<span class="gaccent">IE</span></div>
+    <div class="gsub">seu exocortex pessoal</div>
+    <div id="setpin">
+      <div class="gmsg">Crie um PIN de 4 numeros.<br>Este aparelho vai lembrar dele.</div>
+      <input id="pin1" type="tel" inputmode="numeric" maxlength="4" placeholder="....">
+      <button onclick="savePin()">Criar PIN e entrar</button>
+      <button class="ghost" onclick="skipPin()">Entrar sem PIN</button>
+    </div>
+    <div id="askpin" class="hide">
+      <div class="gmsg">Bem-vindo de volta. Digite seu PIN.</div>
+      <input id="pin2" type="tel" inputmode="numeric" maxlength="4" placeholder="....">
+      <button onclick="checkPin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
