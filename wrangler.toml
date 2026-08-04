@@ -1,0 +1,5 @@
+name = "charlie-app"
+compatibility_date = "2026-08-03"
+
+[[routes]]
+pattern = "charlie-app.jz3h.workers.dev/*"

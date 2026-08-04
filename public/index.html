@@ -115,7 +115,7 @@ button:hover { background:#c73650; }
 </main>
 <div style="text-align:center;padding:16px;color:#555;font-size:0.7em">CharlieApp v3 | Ollama | Tailscale | 100.116.60.65</div>
 <script>
-const BASE = "http://localhost:4000";
+const BASE = window.location.origin + "/api";
 function showSection(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
   document.getElementById("sec-" + id).classList.add("active");
