@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a1a2e">
+<title>CharlieApp</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:system-ui,sans-serif; background:#1a1a2e; color:#e0e0e0; min-height:100vh; }
+header { background:#16213e; padding:16px; text-align:center; border-bottom:2px solid #0f3460; }
+header h1 { color:#e94560; font-size:1.4em; }
+header p { color:#888; font-size:0.8em; margin-top:4px; }
+nav { display:flex; flex-wrap:wrap; gap:8px; padding:12px; justify-content:center; background:#16213e; }
+nav button { background:#0f3460; color:#e0e0e0; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:0.85em; }
+nav button:hover, nav button.active { background:#e94560; }
+main { padding:16px; max-width:600px; margin:0 auto; }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#16213e; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid #0f3460; }
+.card h2 { color:#e94560; font-size:1.1em; margin-bottom:8px; }
+input, textarea, select { width:100%; padding:10px; background:#0f3460; color:#e0e0e0; border:1px solid #333; border-radius:8px; margin-bottom:8px; font-size:0.9em; }
+button { background:#e94560; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-size:0.9em; width:100%; }
+button:hover { background:#c73650; }
+.result { background:#0f3460; border-radius:8px; padding:12px; margin-top:8px; font-size:0.85em; word-break:break-all; max-height:300px; overflow-y:auto; white-space:pre-wrap; }
+</style>
+</head>
+<body>
+<header>
+<h1>CharlieApp</h1>
+<p>Ferramentas Hacker PWA | Tailscale: 100.116.60.65</p>
+</header>
+<nav id="nav">
+<button class="active" onclick="showSection('home')">Home</button>
+<button onclick="showSection('chat')">Chat</button>
+<button onclick="showSection('pix')">Pix</button>
+<button onclick="showSection('ports')">Portas</button>
+<button onclick="showSection('tools')">Ferramentas</button>
+<button onclick="showSection('server')">Servidor</button>
+</nav>
+<main>
+<div id="sec-home" class="section active">
+<div class="card"><h2>Status</h2><div id="status-box">Carregando...</div></div>
+<div class="card"><h2>Atalhos Rapios</h2>
+<button onclick="showSection('chat')">Abrir Chat</button>
+<button onclick="showSection('pix')">Abrir Pix Scanner</button>
+<button onclick="showSection('ports')">Abrir Port Scanner</button>
+<button onclick="showSection('tools')">Abrir Ferramentas</button>
+</div>
+</div>
+<div id="sec-chat" class="section">
+<div class="card"><h2>Chat com Ollama</h2>
+<textarea id="chat-input" rows="3" placeholder="Digite sua mensagem..."></textarea>
+<button onclick="sendChat()">Enviar</button>
+<div class="result" id="chat-result" style="display:none"></div>
+</div>
+</div>
+<div id="sec-pix" class="section">
+<div class="card"><h2>Pix Scanner</h2>
+<textarea id="pix-qr" rows="3" placeholder="Cole o QR Code Pix aqui..."></textarea>
+<button onclick="scanPix()">Escanear</button>
+<div class="result" id="pix-result" style="display:none"></div>
+</div>
+<div class="card"><h2>Validar Pix</h2>
+<input id="pix-amount" placeholder="Valor (ex: 50.00)">
+<input id="pix-key" placeholder="Chave Pix">
+<button onclick="validatePix()">Validar Transacao</button>
+<div class="result" id="pix-val-result" style="display:none"></div>
+</div>
+</div>
+<div id="sec-ports" class="section">
+<div class="card"><h2>Port Scanner</h2>
+<input id="scan-host" placeholder="Host (padrao: 127.0.0.1)" value="127.0.0.1">
+<button onclick="scanPorts()">Escanear</button>
+<div class="result" id="ports-result" style="display:none"></div>
+</div>
+</div>
+<div id="sec-tools" class="section">
+<div class="card"><h2>Hash Checker</h2>
+<textarea id="hash-text" rows="2" placeholder="Texto para hashear..."></textarea>
+<select id="hash-algo"><option value="sha256">SHA-256</option><option value="md5">MD5</option><option value="sha1">SHA-1</option><option value="sha512">SHA-512</option></select>
+<button onclick="calcHash()">Gerar Hash</button>
+<div class="result" id="hash-result" style="display:none"></div>
+</div>
+<div class="card"><h2>AES Encrypt</h2>
+<textarea id="enc-text" rows="2" placeholder="Texto para criptografar..."></textarea>
+<input id="enc-key" placeholder="Chave (hex 32 bytes)" maxlength="64">
+<input id="enc-iv" placeholder="IV (hex 16 bytes)" maxlength="32">
+<button onclick="doEncrypt()">Criptografar</button>
+<div class="result" id="enc-result" style="display:none"></div>
+</div>
+<div class="card"><h2>AES Decrypt</h2>
+<textarea id="dec-text" rows="2" placeholder="Texto criptografado (hex)..."></textarea>
+<input id="dec-key" placeholder="Chave (hex 32 bytes)" maxlength="64">
+<input id="dec-iv" placeholder="IV (hex 16 bytes)" maxlength="32">
+<button onclick="doDecrypt()">Descriptografar</button>
+<div class="result" id="dec-result" style="display:none"></div>
+</div>
+<div class="card"><h2>Gerar Senha</h2>
+<input id="pwd-length" type="number" placeholder="Tamanho (padrao: 16)" value="16" min="4" max="128">
+<button onclick="genPassword()">Gerar Senha</button>
+<div class="result" id="pwd-result" style="display:none"></div>
+</div>
+</div>
+<div id="sec-server" class="section">
+<div class="card"><h2>Info do Servidor</h2>
+<button onclick="getServerInfo()">Buscar Info</button>
+<div class="result" id="server-result" style="display:none"></div>
+</div>
+<div class="card"><h2>Network Info</h2>
+<button onclick="getNetworkInfo()">Info de Rede</button>
+<div class="result" id="network-result" style="display:none"></div>
+</div>
+</div>
+</main>
+<div style="text-align:center;padding:16px;color:#555;font-size:0.7em">CharlieApp v3 | Ollama | Tailscale | 100.116.60.65</div>
+<script>
+const BASE = "http://localhost:4000";
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById("sec-" + id).classList.add("active");
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+  event.target.classList.add("active");
+}
+async function api(url, opts={}) {
+  try {
+    const r = await fetch(BASE + url, opts);
+    return await r.json();
+  } catch(e) { return { error: e.message }; }
+}
+async function sendChat() {
+  const msg = document.getElementById("chat-input").value;
+  if (!msg) return;
+  const res = document.getElementById("chat-result");
+  res.style.display = "block";
+  res.textContent = "Digitando...";
+  const data = await api("/api/say", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({message:msg}) });
+  res.textContent = data.response || data.error || "Erro";
+}
+async function scanPix() {
+  const qr = document.getElementById("pix-qr").value;
+  const res = document.getElementById("pix-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/pix-scan", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({qr}) }), null, 2);
+}
+async function validatePix() {
+  const amount = document.getElementById("pix-amount").value;
+  const key = document.getElementById("pix-key").value;
+  const res = document.getElementById("pix-val-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/pix-validate", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({amount, key}) }), null, 2);
+}
+async function scanPorts() {
+  const host = document.getElementById("scan-host").value || "127.0.0.1";
+  const res = document.getElementById("ports-result");
+  res.style.display = "block";
+  res.textContent = "Scanning...";
+  const data = await api("/api/scan-ports?host=" + encodeURIComponent(host));
+  res.textContent = JSON.stringify(data, null, 2);
+}
+async function calcHash() {
+  const text = document.getElementById("hash-text").value;
+  const algo = document.getElementById("hash-algo").value;
+  const res = document.getElementById("hash-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/hash?text=" + encodeURIComponent(text) + "&algo=" + algo), null, 2);
+}
+async function doEncrypt() {
+  const text = document.getElementById("enc-text").value;
+  const key = document.getElementById("enc-key").value;
+  const iv = document.getElementById("enc-iv").value;
+  const res = document.getElementById("enc-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/encrypt", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({text, key, iv}) }), null, 2);
+}
+async function doDecrypt() {
+  const enc = document.getElementById("dec-text").value;
+  const key = document.getElementById("dec-key").value;
+  const iv = document.getElementById("dec-iv").value;
+  const res = document.getElementById("dec-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/decrypt", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({enc, key, iv}) }), null, 2);
+}
+async function genPassword() {
+  const len = document.getElementById("pwd-length").value;
+  const res = document.getElementById("pwd-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/gen-password?length=" + len), null, 2);
+}
+async function getServerInfo() {
+  const res = document.getElementById("server-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/server"), null, 2);
+}
+async function getNetworkInfo() {
+  const res = document.getElementById("network-result");
+  res.style.display = "block";
+  res.textContent = JSON.stringify(await api("/api/network"), null, 2);
+}
+(async () => {
+  const data = await api("/api/status");
+  const box = document.getElementById("status-box");
+  box.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+})();
+</script>
+</body>
+</html>
