@@ -125,7 +125,7 @@ function showSection(id) {
 async function api(url, opts={}) {
   try {
     const r = await fetch(BASE + url, opts);
-    return await r.json();
+    if (!r.ok) return { error: r.status + " " + r.statusText }; return await r.json();
   } catch(e) { return { error: e.message }; }
 }
 async function sendChat() {
